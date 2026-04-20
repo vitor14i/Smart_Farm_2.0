@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'custom_app_bar.dart';
 import 'styles.dart';
+import 'common_widgets.dart';
 
 /// Arquivo: test_sensores_screen.dart
 /// Tela para simular leituras de sensores (temperatura, umidade, pH e nível
@@ -22,8 +23,7 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardColor = isDark ? Colors.grey[900]! : Colors.white;
+    // cardColor removed — use isDark directly.
 
     return Scaffold(
       appBar: const CustomAppBar(title: "Simulador de Sensores"),
@@ -44,13 +44,12 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
             const SizedBox(height: 30),
 
             // Simulador de Temperatura
-            _buildSimuladorCard(
-              cardColor,
-              titulo:
+            SensorControl(
+              title:
                   "Temperatura Ambiente: ${_temperatura.toStringAsFixed(1)}°C",
-              icone: Icons.thermostat,
-              corIcone: _temperatura > 30 ? Colors.red : Colors.orange,
-              controlo: Slider(
+              icon: Icons.thermostat,
+              iconColor: _temperatura > 30 ? Colors.red : Colors.orange,
+              control: Slider(
                 value: _temperatura,
                 min: 10.0,
                 max: 45.0,
@@ -63,12 +62,11 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
             const SizedBox(height: 20),
 
             // Simulador de Humidade do Solo
-            _buildSimuladorCard(
-              cardColor,
-              titulo: "Humidade do Solo: ${_umidade.toInt()}%",
-              icone: Icons.water_drop,
-              corIcone: _umidade < 30 ? Colors.red : Colors.blue,
-              controlo: Slider(
+            SensorControl(
+              title: "Humidade do Solo: ${_umidade.toInt()}%",
+              icon: Icons.water_drop,
+              iconColor: _umidade < 30 ? Colors.red : Colors.blue,
+              control: Slider(
                 value: _umidade,
                 min: 0.0,
                 max: 100.0,
@@ -81,12 +79,11 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
             const SizedBox(height: 20),
 
             // Simulador de pH
-            _buildSimuladorCard(
-              cardColor,
-              titulo: "pH do Solo: ${_ph.toStringAsFixed(1)}",
-              icone: Icons.science,
-              corIcone: (_ph < 5.5 || _ph > 7.5) ? Colors.red : Colors.green,
-              controlo: Slider(
+            SensorControl(
+              title: "pH do Solo: ${_ph.toStringAsFixed(1)}",
+              icon: Icons.science,
+              iconColor: (_ph < 5.5 || _ph > 7.5) ? Colors.red : Colors.green,
+              control: Slider(
                 value: _ph,
                 min: 0.0,
                 max: 14.0,
@@ -99,12 +96,11 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
             const SizedBox(height: 20),
 
             // Simulador de Nível de Água (Reservatório)
-            _buildSimuladorCard(
-              cardColor,
-              titulo: "Reservatório de Água: $_nivelAgua",
-              icone: Icons.waves,
-              corIcone: _nivelAgua == 'BAIXO' ? Colors.red : Colors.cyan,
-              controlo: Padding(
+            SensorControl(
+              title: "Reservatório de Água: $_nivelAgua",
+              icon: Icons.waves,
+              iconColor: _nivelAgua == 'BAIXO' ? Colors.red : Colors.cyan,
+              control: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: SegmentedButton<String>(
                   segments: const [
@@ -151,45 +147,6 @@ class _TestSensoresScreenState extends State<TestSensoresScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSimuladorCard(
-    Color bgColor, {
-    required String titulo,
-    required IconData icone,
-    required Color corIcone,
-    required Widget controlo,
-  }) {
-    // Card visual que agrupa um controle de simulação (Slider/SegmentedButton)
-    // com título e ícone.
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: kCardBorderRadius,
-        boxShadow: kCardShadows,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icone, color: corIcone, size: 28),
-              const SizedBox(width: 10),
-              Text(
-                titulo,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          controlo, // Aqui entra o Slider ou o SegmentedButton
-        ],
       ),
     );
   }

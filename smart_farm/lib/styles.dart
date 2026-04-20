@@ -1,13 +1,55 @@
 import 'package:flutter/material.dart';
 
-/// Arquivo: styles.dart
-/// Constantes e utilitários visuais compartilhados pela aplicação (radii,
-/// sombras, estilos de texto e helpers de cor).
+// ==========================================
+// 1. CORES E TIPOGRAFIA (FIGMA)
+// ==========================================
+class AppColors {
+  static const Color primaryGreen = Color(0xFF4CAF50);
+  static const Color darkGreen = Color(0xFF2E7D32);
+  static const Color lightGreen = Color(0xFFE8F5E9);
 
-// Dimensões
+  static const Color background = Color(0xFFF9F9F9);
+  static const Color textMain = Color(0xFF1E1E1E);
+  static const Color textSecondary = Color(0xFF757575);
+
+  static const Color warning = Color(0xFFFFA000);
+  static const Color danger = Color(0xFFD32F2F);
+  static const Color water = Color(0xFF29B6F6);
+}
+
+class AppTextStyles {
+  static const TextStyle greeting = TextStyle(
+    fontSize: 16,
+    color: AppColors.textSecondary,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle title = TextStyle(
+    fontSize: 28,
+    color: AppColors.textMain,
+    fontWeight: FontWeight.bold,
+    letterSpacing: -0.5,
+  );
+
+  static const TextStyle cardTitle = TextStyle(
+    fontSize: 16,
+    color: AppColors.textMain,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle cardSubtitle = TextStyle(
+    fontSize: 13,
+    color: AppColors.textSecondary,
+  );
+}
+
+// ==========================================
+// 2. CONSTANTES DE LAYOUT (CARDS E SOMBRAS)
+// ==========================================
 const double kCardRadius = 15.0;
 
-// Shadows
+final BorderRadius kCardBorderRadius = BorderRadius.circular(kCardRadius);
+
 const List<BoxShadow> kCardShadows = [
   BoxShadow(
     color: Color.fromRGBO(0, 0, 0, 0.05),
@@ -16,28 +58,13 @@ const List<BoxShadow> kCardShadows = [
   ),
 ];
 
-// Text styles
-const TextStyle kHeaderStyle = TextStyle(
-  fontSize: 22,
-  fontWeight: FontWeight.bold,
-);
-const TextStyle kSubtleStyle = TextStyle(color: Colors.grey);
-const TextStyle kCardTitleStyle = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-);
+// ==========================================
+// 3. OUTRAS CONSTANTES
+// ==========================================
+const String kPlantImageUrlSmall =
+    'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+const String kPlantImageUrlLarge =
+    'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
 
-// Common radii
-final BorderRadius kCardBorderRadius = BorderRadius.circular(kCardRadius);
-
-// Utility to build a color with alpha from an existing Color without using
-// deprecated `.red/.green/.blue` getters.
-/// Retorna uma nova `Color` com a opacidade aplicada sobre a cor `c`.
-/// Usa operações de bits para extrair canais RGBA e reconstruir com alpha.
-Color colorWithOpacity(Color c, double opacity) {
-  final int v = c.toARGB32();
-  final int r = (v >> 16) & 0xFF;
-  final int g = (v >> 8) & 0xFF;
-  final int b = v & 0xFF;
-  return Color.fromRGBO(r, g, b, opacity);
-}
+bool isDarkMode(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark;

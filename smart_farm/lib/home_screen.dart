@@ -1,228 +1,138 @@
 import 'package:flutter/material.dart';
-import 'styles.dart';
 import 'custom_app_bar.dart';
 import 'farm_state.dart';
+import 'styles.dart';
 
-/// Arquivo: home_screen.dart
-/// Tela principal que lista as SmartFarms do usuário e mostra indicadores
-/// rápidos como temperatura, nível de água e estado da planta.
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    // Escuta APENAS a lista global para saber se uma farm foi adicionada/removida
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark ? Colors.grey[900] : AppColors.background,
       appBar: const CustomAppBar(),
       body: AnimatedBuilder(
         animation: globalFarmManager,
         builder: (context, child) {
-          double tempGeral = globalFarmManager.farms.isNotEmpty
-              ? globalFarmManager.farms.first.temperatura
-              : 24.0;
-
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // CABEÇALHO E PESQUISA
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Olá LITA",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        "Olá, LITA\nBom Dia",
+                        style: AppTextStyles.greeting,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Nurture Plants.",
+                        style: AppTextStyles.title.copyWith(
+                          color: isDark ? Colors.white : AppColors.textMain,
                         ),
                       ),
-                      Row(
-                        children: [
-                          const Icon(Icons.wb_sunny_outlined, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            "${tempGeral.toStringAsFixed(1)}°C",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 25),
+                      const SizedBox(height: 20),
 
-                // SECÇÃO: Minhas SmartFarms
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "Minhas SmartFarms",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      ...globalFarmManager.farms.map(
-                        (farm) => AnimatedBuilder(
-                          animation:
-                              farm, // CORREÇÃO: Escuta cada farm individualmente!
-                          builder: (ctx, _) => Container(
-                            width: 160,
-                            margin: const EdgeInsets.only(right: 15),
-                            child: _buildFarmButton(
-                              context,
-                              farm.nome,
-                              farm.planta,
-                              Icons.keyboard_arrow_right,
-                              "/farm_details",
-                              farm,
+                      // Barra de Pesquisa com Botão de Filtro (Figma Style)
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 8,
+                          top: 4,
+                          bottom: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.grey[800] : Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: kCardShadows,
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(
+                              Icons.search,
+                              color: AppColors.textSecondary,
+                            ),
+                            hintText: "Pesquisar planta...",
+                            border: InputBorder.none,
+                            // Botão de Filtro Verde
+                            suffixIcon: Container(
+                              margin: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryGreen,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.tune,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 160,
-                        child: _buildFarmButton(
-                          context,
-                          "Adicionar",
-                          "SmartFarm",
-                          Icons.add_box_sharp,
-                          "/add_farm",
-                          null,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 30),
 
-                // SECÇÃO NOVO: Estado da Planta
+                // LISTA DE SMARTFARMS
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    "Estado da Planta",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    "Minhas Plantas",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: globalFarmManager.farms
-                        .map(
-                          (farm) => AnimatedBuilder(
-                            animation: farm,
-                            builder: (ctx, _) {
-                              List<Color> corEstado =
-                                  (farm.estadoPlanta == 'Ótima' ||
-                                      farm.estadoPlanta == 'Boa')
-                                  ? [Colors.green[400]!, Colors.green[700]!]
-                                  : farm.estadoPlanta == 'Normal'
-                                  ? [Colors.yellow[600]!, Colors.orange[400]!]
-                                  : [Colors.red[400]!, Colors.red[800]!];
-                              return Container(
-                                width: 160,
-                                margin: const EdgeInsets.only(right: 15),
-                                child: _buildGradientCard(
-                                  farm.estadoPlanta.toUpperCase(),
-                                  corEstado,
-                                  farm.nome,
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
-                // SECÇÃO: Nível de Água
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "Nível da água no reservatório",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                SizedBox(
+                  height: 260, // Altura aumentada para assemelhar à imagem
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: globalFarmManager.farms.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == globalFarmManager.farms.length) {
+                        return _buildAddFarmCard(context);
+                      }
+                      final farm = globalFarmManager.farms[index];
+                      return AnimatedBuilder(
+                        animation: farm,
+                        builder: (context, child) =>
+                            _buildPlantCard(context, farm, isDark),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: globalFarmManager.farms
-                        .map(
-                          (farm) => AnimatedBuilder(
-                            animation: farm,
-                            builder: (ctx, _) {
-                              List<Color> corAgua = farm.nivelAgua == 'BAIXO'
-                                  ? [Colors.red[400]!, Colors.red[700]!]
-                                  : farm.nivelAgua == 'MÉDIO'
-                                  ? [Colors.orange[400]!, Colors.orange[700]!]
-                                  : [Colors.blue[200]!, Colors.blue[600]!];
-                              return Container(
-                                width: 160,
-                                margin: const EdgeInsets.only(right: 15),
-                                child: _buildGradientCard(
-                                  farm.nivelAgua,
-                                  corAgua,
-                                  farm.nome,
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 30),
 
-                // SECÇÃO: Umidade do solo
+                // SENSORES (Visão Geral)
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    "Umidade do solo",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    "Visão Geral",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: globalFarmManager.farms
-                        .map(
-                          (farm) => AnimatedBuilder(
-                            animation: farm,
-                            builder: (ctx, _) {
-                              String estadoUmidade = farm.umidade < 30
-                                  ? "BAIXA"
-                                  : "BOA";
-                              List<Color> corUmidade = farm.umidade < 30
-                                  ? [Colors.orange[700]!, Colors.orange[400]!]
-                                  : [Colors.brown[700]!, Colors.brown[400]!];
-                              return Container(
-                                width: 160,
-                                margin: const EdgeInsets.only(right: 15),
-                                child: _buildGradientCard(
-                                  estadoUmidade,
-                                  corUmidade,
-                                  farm.nome,
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        .toList(),
+                const SizedBox(height: 15),
+                ...globalFarmManager.farms.map(
+                  (farm) => AnimatedBuilder(
+                    animation: farm,
+                    builder: (ctx, _) => _buildSensorSummaryTile(farm, isDark),
                   ),
                 ),
               ],
@@ -230,75 +140,216 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildFarmButton(
-    BuildContext context,
-    String text1,
-    String text2,
-    IconData icon,
-    String? route,
-    FarmState? farm,
-  ) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-      onPressed: route != null
-          ? () => Navigator.pushNamed(context, route, arguments: farm)
-          : () {},
-      child: Column(
-        children: [
-          Text(
-            text1,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() => _selectedIndex = index);
+          if (index == 1) {
+            Navigator.pushNamed(context, '/plantacao');
+          }
+        },
+        selectedItemColor: AppColors.primaryGreen,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+        elevation: 10,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_scanner, size: 32),
+            label: 'Scan',
           ),
-          Text(
-            text2,
-            style: const TextStyle(fontSize: 13),
-            textAlign: TextAlign.center,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Perfil',
           ),
-          const SizedBox(height: 5),
-          Icon(icon, size: 27),
         ],
       ),
     );
   }
 
-  Widget _buildGradientCard(
-    String status,
-    List<Color> colors,
-    String farmName,
-  ) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 100,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: colors,
+  Widget _buildPlantCard(BuildContext context, FarmState farm, bool isDark) {
+    final String imageUrl = kPlantImageUrlSmall;
+    return GestureDetector(
+      onTap: () =>
+          Navigator.pushNamed(context, '/farm_details', arguments: farm),
+      child: Container(
+        width: 170,
+        margin: const EdgeInsets.only(right: 15),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.grey[800] : Colors.white,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: kCardShadows,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(25),
+                ),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
             ),
-            borderRadius: kCardBorderRadius,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            status,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          farm.nome,
+                          style: AppTextStyles.cardTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          farm.planta,
+                          style: AppTextStyles.cardSubtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.water_drop,
+                              size: 16,
+                              color: AppColors.water,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "${farm.umidade.toInt()}%",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          farm.estadoPlanta == 'Ótima'
+                              ? Icons.check_circle
+                              : Icons.warning,
+                          size: 18,
+                          color: farm.estadoPlanta == 'Ótima'
+                              ? AppColors.primaryGreen
+                              : AppColors.warning,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddFarmCard(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/add_farm'),
+      child: Container(
+        width: 170,
+        margin: const EdgeInsets.only(right: 15),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.grey[800] : Colors.transparent,
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: AppColors.primaryGreen.withAlpha((0.5 * 255).round()),
+            width: 2,
           ),
         ),
-        const SizedBox(height: 5),
-        Text(farmName, overflow: TextOverflow.ellipsis),
-      ],
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, size: 40, color: AppColors.primaryGreen),
+            SizedBox(height: 10),
+            Text(
+              "Nova Planta",
+              style: TextStyle(
+                color: AppColors.primaryGreen,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSensorSummaryTile(FarmState farm, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: kCardShadows,
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.lightGreen,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(Icons.thermostat, color: AppColors.primaryGreen),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  farm.nome,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "pH: ${farm.ph.toStringAsFixed(1)} | Água: ${farm.nivelAgua}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            "${farm.temperatura.toStringAsFixed(1)}°",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: AppColors.primaryGreen,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

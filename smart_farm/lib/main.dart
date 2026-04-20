@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart'; 
 import 'home_screen.dart';
 import 'farm_details_screen.dart';
-import 'plantacao_screen.dart'; // IMPORT NOVO
-import 'add_farm_screen.dart'; // IMPORT NOVO
+import 'plantacao_screen.dart'; 
+import 'add_farm_screen.dart'; 
 import 'theme_notifier.dart';
 import 'test_sensores_screen.dart';
-
-/// Arquivo: main.dart
-/// Ponto de entrada da aplicação. Configura temas, rotas iniciais e
-/// insere `ValueListenableBuilder` para ouvir as mudanças de tema.
 
 void main() {
   runApp(const SmartFarmApp());
@@ -28,15 +25,14 @@ class SmartFarmApp extends StatelessWidget {
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: currentMode,
-          initialRoute: '/',
+          initialRoute: '/', // Inicia no Login
           routes: {
-            '/': (context) => const HomeScreen(),
-            '/farm_details': (context) =>
-                const FarmDetailsScreen(), // ROTA RENOMEADA
+            '/': (context) => const LoginScreen(),
+            '/home': (context) => const HomeScreen(), // Rota Home atualizada
+            '/farm_details': (context) => const FarmDetailsScreen(), 
             '/plantacao': (context) => const PlantacaoScreen(),
             '/add_farm': (context) => const AddFarmScreen(),
-            '/test_sensores': (context) =>
-                const TestSensoresScreen(), // <-- NOVA ROTA
+            '/test_sensores': (context) => const TestSensoresScreen(), 
           },
         );
       },

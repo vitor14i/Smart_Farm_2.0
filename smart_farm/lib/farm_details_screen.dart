@@ -7,6 +7,10 @@ import 'farm_state.dart';
 import 'common_widgets.dart';
 
 class FarmDetailsScreen extends StatelessWidget {
+  /// Tela de detalhes de uma `FarmState` específica.
+  ///
+  /// Exibe informações, tags dinâmicas e gráficos simulados com base nos
+  /// dados da `farm` passada via rota (em `ModalRoute.settings.arguments`).
   const FarmDetailsScreen({super.key});
 
   @override
@@ -32,6 +36,7 @@ class FarmDetailsScreen extends StatelessWidget {
       body: AnimatedBuilder(
         animation: farm,
         builder: (context, child) {
+          // Determina cores condicionais com base nos valores da farm
           Color corTemp = farm.temperatura > 30
               ? Colors.red
               : (farm.temperatura < 15 ? Colors.blue : AppColors.primaryGreen);
@@ -51,7 +56,6 @@ class FarmDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // IMAGEM DO TOPO
                 Container(
                   width: double.infinity,
                   height: 250,
@@ -72,7 +76,6 @@ class FarmDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // TÍTULO E AVALIAÇÃO
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +110,7 @@ class FarmDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // TAGS DINÂMICAS
+                      // Tags dinâmicas mostrando valores principais
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
@@ -142,7 +145,6 @@ class FarmDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 30),
 
-                      // GRÁFICOS VARIÁVEIS (24 Horas)
                       Text(
                         "Visão Gráfica (Últimas 24h)",
                         style: AppTextStyles.title.copyWith(fontSize: 22),
@@ -170,7 +172,6 @@ class FarmDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 30),
 
-                      // ABOUT
                       Text(
                         "About",
                         style: AppTextStyles.title.copyWith(fontSize: 22),
@@ -226,8 +227,8 @@ class FarmDetailsScreen extends StatelessWidget {
     );
   }
 
-  // _buildTag removed — use InfoTag directly in the UI to avoid dead code.
-
+  /// Constrói um cartão visualizando o nível do reservatório com barras
+  /// e percentual estimado.
   Widget _buildReservoirCard(String level, bool isDark) {
     Color barColor = level == 'ALTO'
         ? AppColors.primaryGreen

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'custom_app_bar.dart';
-import 'styles.dart';
 import 'common_widgets.dart';
 
 /// Arquivo: test_sensores_screen.dart
@@ -11,19 +10,35 @@ class TestSensoresScreen extends StatefulWidget {
   const TestSensoresScreen({super.key});
 
   @override
+  /// Cria o objeto `State` associado a esta `StatefulWidget`.
+  ///
+  /// Retorna uma instância de `_TestSensoresScreenState` que gerencia o
+  /// estado e constrói a interface da tela de simulação de sensores.
   State<TestSensoresScreen> createState() => _TestSensoresScreenState();
 }
 
 class _TestSensoresScreenState extends State<TestSensoresScreen> {
-  // Valores iniciais simulados dos sensores
+  /// Estado de `TestSensoresScreen`.
+  ///
+  /// Mantém valores simulados de temperatura, umidade, pH e nível do
+  /// reservatório, usados pelos controles desta tela.
+
+  /// Valor simulado da temperatura em °C.
   double _temperatura = 24.0;
+
+  /// Valor simulado da umidade em %.
   double _umidade = 65.0;
+
+  /// Valor simulado do pH do solo.
   double _ph = 6.2;
+
+  /// Estado simulado do nível do reservatório de água.
   String _nivelAgua = 'ALTO';
 
   @override
   Widget build(BuildContext context) {
-    // cardColor removed — use isDark directly.
+    /// Constrói a tela com controles para ajustar valores simulados dos
+    /// sensores e um botão para simular o envio desses dados.
 
     return Scaffold(
       appBar: const CustomAppBar(title: "Simulador de Sensores"),

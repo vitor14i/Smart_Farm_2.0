@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Arquivo: theme_notifier.dart
-/// Mantém o estado global do tema (claro / escuro) usado pela aplicação.
-/// `themeNotifier` é um `ValueNotifier<ThemeMode>` lido por widgets que
-/// precisam reagir à mudança de tema.
+/// Notifier global que armazena o `ThemeMode` atual da aplicação.
+///
+/// Widgets podem escutar `themeNotifier` (por exemplo via
+/// `ValueListenableBuilder`) para reagir quando o usuário alternar entre
+/// tema claro e escuro.
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'styles.dart';
 
+/// Pequeno componente que exibe um ícone e um texto estilizado usado como
+/// tag informativa (p.ex. "Luz: 80%", "pH: 6.2").
 class InfoTag extends StatelessWidget {
   final IconData icon;
   final String text;
@@ -40,6 +42,8 @@ class InfoTag extends StatelessWidget {
   }
 }
 
+/// Cartão reutilizável para agrupar conteúdo com sombra, borda e padding
+/// padronizados. Aceita `isDark` para forçar o estilo em temas escuros.
 class AppCard extends StatelessWidget {
   final Widget child;
   final bool? isDark;
@@ -68,6 +72,8 @@ class AppCard extends StatelessWidget {
   }
 }
 
+/// Widget auxiliar que empacota um título, ícone e um controle (p.ex. Slider)
+/// dentro de um `AppCard`. Utilizado por telas de simulação de sensores.
 class SensorControl extends StatelessWidget {
   final String title;
   final IconData icon;

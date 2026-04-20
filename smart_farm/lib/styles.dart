@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-// ==========================================
-// 1. CORES E TIPOGRAFIA (FIGMA)
-// ==========================================
+/// Definições centrais de cores usadas pela aplicação.
+///
+/// Mantém constantes que representam a paleta principal (inspirada no Figma)
+/// para uso consistente em widgets e temas.
 class AppColors {
   static const Color primaryGreen = Color(0xFF4CAF50);
   static const Color darkGreen = Color(0xFF2E7D32);
@@ -17,6 +18,10 @@ class AppColors {
   static const Color water = Color(0xFF29B6F6);
 }
 
+/// Tipografias padrão da aplicação.
+///
+/// Agrega `TextStyle` reutilizáveis para títulos, cartões e textos de
+/// saudação para garantir consistência visual.
 class AppTextStyles {
   static const TextStyle greeting = TextStyle(
     fontSize: 16,
@@ -43,13 +48,13 @@ class AppTextStyles {
   );
 }
 
-// ==========================================
-// 2. CONSTANTES DE LAYOUT (CARDS E SOMBRAS)
-// ==========================================
+/// Raio padrão para os cartões da UI.
 const double kCardRadius = 15.0;
 
+/// `BorderRadius` reutilizável construído a partir de `kCardRadius`.
 final BorderRadius kCardBorderRadius = BorderRadius.circular(kCardRadius);
 
+/// Sombra padrão utilizada em `AppCard` e outros componentes.
 const List<BoxShadow> kCardShadows = [
   BoxShadow(
     color: Color.fromRGBO(0, 0, 0, 0.05),
@@ -58,13 +63,12 @@ const List<BoxShadow> kCardShadows = [
   ),
 ];
 
-// ==========================================
-// 3. OUTRAS CONSTANTES
-// ==========================================
+/// URLs de imagens usadas como placeholders para plantas.
 const String kPlantImageUrlSmall =
     'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
 const String kPlantImageUrlLarge =
     'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
 
+/// Helper para detectar se o tema atual é escuro.
 bool isDarkMode(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark;

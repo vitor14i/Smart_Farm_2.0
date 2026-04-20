@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'farm_state.dart';
 
-/// Arquivo: add_farm_screen.dart
-/// Tela para criar uma nova SmartFarm localmente. Valida campos e adiciona a
-/// `globalFarmManager` quando o usuário confirma.
+/// Tela para adicionar uma nova `FarmState` localmente.
+///
+/// Valida campos e, em caso de sucesso, adiciona a farm ao
+/// `globalFarmManager` e fecha a tela.
 class AddFarmScreen extends StatefulWidget {
   const AddFarmScreen({super.key});
 
@@ -37,7 +38,7 @@ class _AddFarmScreenState extends State<AddFarmScreen> {
           children: [
             // Campo para o nome da nova farm
             TextFormField(
-              controller: _nomeController, // Guarda o texto digitado
+              controller: _nomeController,
               decoration: InputDecoration(
                 labelText: 'Nome da SmartFarm',
                 border: OutlineInputBorder(

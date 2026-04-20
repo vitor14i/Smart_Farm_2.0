@@ -3,6 +3,8 @@ import 'custom_app_bar.dart';
 import 'farm_state.dart';
 import 'styles.dart';
 
+/// Tela principal do aplicativo que exibe a lista de SmartFarms e um resumo
+/// dos sensores de cada farm.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,10 +13,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  /// Índice selecionado na barra de navegação inferior.
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    // Determina se o tema atual é escuro para ajustar cores locais.
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -169,6 +173,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Constrói o cartão de planta para a lista horizontal de farms.
+  ///
+  /// `farm` fornece os dados exibidos e `isDark` controla o estilo visual.
   Widget _buildPlantCard(BuildContext context, FarmState farm, bool isDark) {
     final String imageUrl = kPlantImageUrlSmall;
     return GestureDetector(
@@ -265,6 +272,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Constrói o cartão que permite adicionar uma nova SmartFarm.
+  ///
+  /// Navega para a rota `/add_farm` quando tocado.
   Widget _buildAddFarmCard(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
@@ -298,6 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Constrói um tile resumido com informações principais dos sensores da
+  /// `farm` para exibição na lista "Visão Geral".
   Widget _buildSensorSummaryTile(FarmState farm, bool isDark) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
